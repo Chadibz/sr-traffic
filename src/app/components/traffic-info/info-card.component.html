@@ -1,34 +1,35 @@
 <div class="msg-ctn" *ngIf="message">
-    <div class={{getStyleClassForPriority(message.priority)}}>
-        {{message.priorityName}}
+    <div [class]="getStyleClassForPriority(message.priority)">
+        {{ translate(message.priorityName) }}
     </div>
     <div class="category">
-        {{message.categoryName}}
+        {{ translate(message.categoryName) }}
     </div>
 
     <div class="p-grid">
         <div class="p-col">
             <div>
-                <b>{{message.title}} ({{message.subCategory}})</b>
+                <b>{{ translate(message.title) }} ({{ translate(message.subCategory) }})</b>
             </div>
             <div *ngIf="message.distance">
-                Avstånd: <span class="dist-info">{{message.distance}} km</span>
+                {{ translate('Distance') }}: <span class="dist-info">{{ message.distance }} km</span>
             </div>
             <div>
-                Publicerad: <span class="date-info">{{message.createdDate | date:'d MMM HH:mm'}}</span>
+                {{ translate('Published') }}:
+                <span class="date-info">{{ message.createdDate | date : 'd MMM HH:mm' }}</span>
             </div>
         </div>
         <div class="p-col-4" *ngIf="showMapLink">
             <div class="open-button" (click)="onClickMessage(message)">
-                <span>Karta</span>
+                <span>{{ translate('Map') }}</span>
                 <i class="pi pi-globe map-icon"></i>
             </div>
         </div>
     </div>
     <div>
-        {{message.exactLocation}}
+        {{ translate(message.exactLocation) }}
     </div>
     <div>
-        {{message.description}}
+        {{ translate(message.description) }}
     </div>
 </div>

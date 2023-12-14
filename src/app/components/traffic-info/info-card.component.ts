@@ -3,6 +3,7 @@ import { ShowMapMessage } from 'src/app/messages/show-map.message';
 import { GeoPosition } from 'src/app/view-models/geo-position';
 import { MessageBrokerService } from 'src/app/services/message-broker.service';
 import { TrafficMessageViewModel } from 'src/app/view-models/traffic-message-vm';
+import { TranslationService } from 'src/app/services/translation.service';
 
 @Component({
     selector: 'app-info-card',
@@ -14,7 +15,10 @@ export class InfoCardComponent implements OnInit {
     @Input() showMapLink = false;
     @Input() userPos: GeoPosition;
 
-    constructor(private readonly broker: MessageBrokerService) {}
+    constructor(
+        private readonly broker: MessageBrokerService,
+        private readonly translationService: TranslationService
+    ) {}
 
     ngOnInit(): void {}
 
@@ -36,7 +40,9 @@ export class InfoCardComponent implements OnInit {
             )
         );
     }
-
+    translate(key: string): string {
+        return this.translationService.translateWithArgs(key);
+    }
     getStyleClassForPriority(prio: number): string {
         let style = 'priority-ctn';
         switch (prio) {

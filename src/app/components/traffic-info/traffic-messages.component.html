@@ -1,37 +1,63 @@
 <div class="outer">
-    <div class="headline">Trafikinformation från SR</div>
+    <div class="headline">Traffic information from SR</div>
     <div class="controls-container">
         <div class="p-grid thegrid">
             <div class="p-col-12 p-md-6 p-lg-4">
-                <button pButton class="sr-button-wide" [disabled]="isLoading || !geolocationAvailable"
-                    (click)="onFetchPosition()" icon="pi pi-compass" iconPos="right" label="Hämta ditt närmaste område">
-                </button>
+                <button
+                    pButton
+                    class="sr-button-wide"
+                    [disabled]="isLoading || !geolocationAvailable"
+                    (click)="onFetchPosition()"
+                    icon="pi pi-compass"
+                    iconPos="right"
+                    label="Fetch your nearest area"
+                ></button>
             </div>
             <div class="p-col-12 p-md-6 p-lg-4 center area-dd">
-                <p-dropdown (onChange)="onAreaChanged($event)" [disabled]="isLoading" [(ngModel)]="selectedArea"
-                    [options]="areaOptions" placeholder="Välj område"></p-dropdown>
+                <p-dropdown
+                    (onChange)="onAreaChanged($event)"
+                    [disabled]="isLoading"
+                    [(ngModel)]="selectedArea"
+                    [options]="areaOptions"
+                    placeholder="Select area"
+                ></p-dropdown>
             </div>
             <div class="p-col-12 p-md-12 p-lg-4">
-                <button pButton class="sr-button-wide" [disabled]="selectedArea === undefined" (click)="onRefresh()"
-                    icon="pi pi-refresh" iconPos="right" label="Hämta nya meddelanden"></button>
-
+                <button
+                    pButton
+                    class="sr-button-wide"
+                    [disabled]="selectedArea === undefined"
+                    (click)="onRefresh()"
+                    icon="pi pi-refresh"
+                    iconPos="right"
+                    label="Fetch new messages"
+                ></button>
             </div>
             <div class="p-col-6 p-lg-6 center num-msg-ctn">
-                {{numFilteredMessagesInfo()}}
+                {{ numFilteredMessagesInfo() }}
             </div>
             <div class="p-col-6 p-lg-6">
-                <button pButton class="sr-button-wide" [disabled]="isLoading || !hasMessagesToDisplay()"
-                    (click)="onShowAllPositionsOnMap()" icon="pi pi-globe" iconPos="right"
-                    label="Visa alla på kartan"></button>
+                <button
+                    pButton
+                    class="sr-button-wide"
+                    [disabled]="isLoading || !hasMessagesToDisplay()"
+                    (click)="onShowAllPositionsOnMap()"
+                    icon="pi pi-globe"
+                    iconPos="right"
+                    label="Show all on the map"
+                ></button>
             </div>
-            <div class="p-col-12 p-lg-12" *ngIf="(!messages || messages.length === 0) else sortfilt">
-            </div>
+            <div class="p-col-12 p-lg-12" *ngIf="!messages || messages.length === 0; else sortfilt"></div>
         </div>
     </div>
     <div *ngIf="messages">
-        <div *ngFor="let m of messages; index as i;">
-            <app-info-card *ngIf="matchesKeyword(m) && matchesFilter(m)" [message]=m [showMapLink]="true"
-                [userPos]="position">
+        <div *ngFor="let m of messages; index as i">
+            <app-info-card
+                *ngIf="matchesKeyword(m) && matchesFilter(m)"
+                [message]="m"
+                [showMapLink]="true"
+                [userPos]="position"
+            >
             </app-info-card>
         </div>
     </div>
@@ -40,68 +66,107 @@
 <ng-template #sortfilt>
     <div class="sortfilt-ctn">
         <p-accordion>
-            <p-accordionTab header="Sortering & filtrering">
+            <p-accordionTab header="Sorting & filtering">
                 <div class="search-ctn">
                     <div class="p-input-icon-left">
                         <i class="pi pi-search"></i>
-                        <input type="text" pInputText placeholder="Sök" [(ngModel)]="keyword" />
+                        <input type="text" pInputText placeholder="Search" [(ngModel)]="keyword" />
                     </div>
                     <span class="clear-btn">
-                        <button pButton (click)="onClear()" [disabled]="isLoading" iconPos="right" label="Töm"></button>
+                        <button
+                            pButton
+                            (click)="onClear()"
+                            [disabled]="isLoading"
+                            iconPos="right"
+                            label="Clear"
+                        ></button>
                     </span>
-
                 </div>
 
                 <div class="p-grid" styleClass="sortfilt-content">
                     <div class="p-col-6">
-                        <div class="sort-filt-label">
-                            Sortering
+                        <div class="sort-filt-label">Sorting</div>
+                        <div class="p-field-radiobutton">
+                            <p-radioButton
+                                (onClick)="onSortOrderChanged()"
+                                value="1"
+                                [(ngModel)]="sortOrder"
+                                label="Highest priority"
+                            ></p-radioButton>
                         </div>
                         <div class="p-field-radiobutton">
-                            <p-radioButton (onClick)="onSortOrderChanged()" value="1" [(ngModel)]="sortOrder"
-                                label="Högst prioritet"></p-radioButton>
-                        </div>
-                        <div class="p-field-radiobutton">
-                            <p-radioButton (onClick)="onSortOrderChanged()" value="3" [(ngModel)]="sortOrder"
-                                label="Senaste">
+                            <p-radioButton
+                                (onClick)="onSortOrderChanged()"
+                                value="3"
+                                [(ngModel)]="sortOrder"
+                                label="Latest"
+                            >
                             </p-radioButton>
                         </div>
                         <div class="p-field-radiobutton">
-                            <p-radioButton (onClick)="onSortOrderChanged()" value="2" [(ngModel)]="sortOrder"
-                                label="Närmast" [disabled]="!position.lat"></p-radioButton>
+                            <p-radioButton
+                                (onClick)="onSortOrderChanged()"
+                                value="2"
+                                [(ngModel)]="sortOrder"
+                                label="Nearest"
+                                [disabled]="!position.lat"
+                            ></p-radioButton>
                         </div>
                     </div>
                     <div class="p-col-6">
-                        <div class="sort-filt-label">
-                            Filtrering
+                        <div class="sort-filt-label">Filtering</div>
+                        <div class="p-field-checkbox">
+                            <p-checkbox
+                                (onChange)="onCheckChanged()"
+                                [(ngModel)]="settings.showTodayOnly"
+                                binary="true"
+                                label="Published today"
+                            ></p-checkbox>
                         </div>
                         <div class="p-field-checkbox">
-                            <p-checkbox (onChange)="onCheckChanged()" [(ngModel)]="settings.showTodayOnly" binary="true"
-                                label="Publicerad idag"></p-checkbox>
-                        </div>
-                        <div class="p-field-checkbox">
-                            <p-checkbox (onChange)="onCheckChanged()" [(ngModel)]="settings.showTrafficIncidentsOnly"
-                                binary="true" label="Endast olyckor">
+                            <p-checkbox
+                                (onChange)="onCheckChanged()"
+                                [(ngModel)]="settings.showTrafficIncidentsOnly"
+                                binary="true"
+                                label="Only accidents"
+                            >
                             </p-checkbox>
                         </div>
                         <div class="p-field-checkbox">
-                            <p-checkbox (onChange)="onCheckChanged()" [(ngModel)]="settings.includeSubcategoryRoadwork"
-                                binary="true" label="Visa vägarbeten">
+                            <p-checkbox
+                                (onChange)="onCheckChanged()"
+                                [(ngModel)]="settings.includeSubcategoryRoadwork"
+                                binary="true"
+                                label="Show road works"
+                            >
                             </p-checkbox>
                         </div>
                         <div class="p-field-checkbox">
-                            <p-checkbox (onChange)="onCheckChanged()" [(ngModel)]="settings.showPublicTransportOnly"
-                                binary="true" label="Endast kollektivtrafik">
+                            <p-checkbox
+                                (onChange)="onCheckChanged()"
+                                [(ngModel)]="settings.showPublicTransportOnly"
+                                binary="true"
+                                label="Only public transport"
+                            >
                             </p-checkbox>
                         </div>
                         <div class="p-field-checkbox">
-                            <p-checkbox (onChange)="onCheckChanged()" [(ngModel)]="settings.showRoadTrafficOnly"
-                                binary="true" label="Visa endast vägtrafik">
+                            <p-checkbox
+                                (onChange)="onCheckChanged()"
+                                [(ngModel)]="settings.showRoadTrafficOnly"
+                                binary="true"
+                                label="Show only road traffic"
+                            >
                             </p-checkbox>
                         </div>
                         <div class="p-field-checkbox">
-                            <p-checkbox (onChange)="onCheckChanged()" [(ngModel)]="showOnlyWithinRadius" binary="true"
-                                label="Inom 100km radie" [disabled]="!position.lat">
+                            <p-checkbox
+                                (onChange)="onCheckChanged()"
+                                [(ngModel)]="showOnlyWithinRadius"
+                                binary="true"
+                                label="Within 100km radius"
+                                [disabled]="!position.lat"
+                            >
                             </p-checkbox>
                         </div>
                     </div>

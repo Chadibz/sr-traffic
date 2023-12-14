@@ -63,7 +63,6 @@ export class TrafficMessagesComponent implements OnInit {
 
     private trafficArea: TrafficArea;
     private allTrafficAreas: TrafficArea[];
-
     geolocationAvailable = false;
 
     constructor(
@@ -96,6 +95,7 @@ export class TrafficMessagesComponent implements OnInit {
                     this.position.lat = position.coords.latitude;
                     this.position.lng = position.coords.longitude;
                     this.trafficArea = await this.service.fetchClosestTrafficAreaForPosition(this.position);
+                    console.log('lsdkqlksd,', this.trafficArea);
                     this.selectedArea = this.trafficArea.trafficdepartmentunitid;
                     await this.fetchMessages();
                 },
@@ -225,6 +225,7 @@ export class TrafficMessagesComponent implements OnInit {
     }
 
     hasMessagesToDisplay(): boolean {
+        console.log(this.messages);
         if (!this.messages || this.messages.length < 1) return false;
         const messages = this.messages.filter((m) => this.matchesFilter(m) && this.matchesKeyword(m));
         return messages.length > 0;
